@@ -1,0 +1,14 @@
+{
+  "name": "chainverif",
+  "version": "1.0.0",
+  "description": "Verify string content using string based rules ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chainverif"
+  ],
+  "author": "Westixy",
+  "license": "MIT"
+}
