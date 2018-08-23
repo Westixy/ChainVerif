@@ -24,7 +24,7 @@ class VerifChain {
   addRule(rule) {
     if (this._rules[rule.name] === undefined)
       this._rules[rule.name] =
-        rule instanceof VerifyRule ? rule : new VerifyRule(rule)
+      rule instanceof VerifyRule ? rule : new VerifyRule(rule)
     else throw new Erorr(`Rule "${rule.name}" already exists on verifChain`)
     return this
   }
@@ -69,9 +69,16 @@ class VerifChain {
    *
    * @return {*}
    */
-  async _verify({ checks, content, stopOnError = true }) {
+  async _verify({
+    checks,
+    content,
+    stopOnError = true
+  }) {
     let results = []
-    for (let { name, args } of checks) {
+    for (let {
+        name,
+        args
+      } of checks) {
       const rule = this._rules[name]
       let result = await rule.verify(content, args)
       let endAfterThis = false
@@ -79,7 +86,12 @@ class VerifChain {
         endAfterThis = true
         result = result === 'true'
       }
-      const resultContent = { result, rule: name, content, args }
+      const resultContent = {
+        result,
+        rule: name,
+        content,
+        args
+      }
       results.push(resultContent)
       if (result === false) {
         resultContent.erorr = await rule.getError(content, args)
@@ -111,8 +123,14 @@ class VerifChain {
 VerifChain.parseRuleChain = chain =>
   chain.split('|').map(r => {
     const match = r.match(/^(.+?)\:(.*)$/)
-    if (match === null) return { name: r, args: [] }
-    return { name: match[1], args: match[2].split(':') }
+    if (match === null) return {
+      name: r,
+      args: []
+    }
+    return {
+      name: match[1],
+      args: match[2].split(':')
+    }
   })
 
 /**
@@ -126,7 +144,11 @@ class VerifyRule {
    *
    * @param {*} rule composed of {name: string, control: RegExp|function|Promise, error: string|Promise|function}
    */
-  constructor({ name, control, error }) {
+  constructor({
+    name,
+    control,
+    error
+  }) {
     /**
      * name of the rule
      * @type {string}
@@ -183,3 +205,7 @@ VerifyRule.promisify = {
     throw new Error(`Can not promisify error of type "${typeof something}"`)
   },
 }
+
+VerifChain.Rule = VerifyRule
+
+module.exports = VerifChain
