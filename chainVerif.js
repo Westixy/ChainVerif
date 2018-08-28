@@ -54,7 +54,7 @@ class VerifChain {
    * @return {*}
    */
   verify(chainRule, content, stopOnError) {
-    return this._verify({
+    return this.verifyItem({
       checks: VerifChain.parseRuleChain(chainRule),
       content,
       stopOnError,
@@ -69,7 +69,7 @@ class VerifChain {
    *
    * @return {*}
    */
-  async _verify({
+  async verifyItem({
     checks,
     content,
     stopOnError = true
@@ -129,7 +129,7 @@ VerifChain.parseRuleChain = chain =>
     }
     return {
       name: match[1],
-      args: match[2].split(':')
+      args: match[2].split(',')
     }
   })
 
