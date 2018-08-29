@@ -2,6 +2,8 @@
 
 Verificator engine for asyncronous control and error generation
 
+Some verification pack like for strings or numbers will be available soon, I will mention them here when a new pack is ready. ;)
+
 ## Getting started
 
 1. Install it `npm i chainverif`
@@ -22,7 +24,7 @@ verifier.addRules([
     // with functions
     name: 'number',
     control: c => c instanceof Number,
-    error: `${c} is not a number`,
+    error: `${c} is not an instance of Number`,
   }, {
     // with one argument
     name: 'min',
@@ -54,12 +56,25 @@ verifier.addRules([
 4. Now verify some values
 ```js
   // some simple
-  verifier.verify('number|min:3|isBetween:4,6', 5) // -> true
-  verifier.verify('min:3|isBetween:4,6', '5') // -> true
-  verifier.verify('number|min:3|isBetween:4,6', '5') // -> false
+  verifier.verify('number|min:3|isBetween:4,6', 5)
+    .then(({result}) => result = true)
+  verifier.verify('min:3|isBetween:4,6', '5')
+    .then(({result}) => result = true)
+  verifier.verify('number|min:3|isBetween:4,6', '5')
+    .then(({result, errors}) => {
+      result === false
+      errors[0] === {
+        result: false,
+        rule: 'number',
+        content: '5',
+        args: [],
+        error: `5 is not an instance if Number`,
+      }
+    })
 
   // with object as content
-  verifier.verify('asyncCheck',  {id: 12, sessionHash: 'xxxx'}) // -> don't know (:
+  verifier.verify('asyncCheck',  {id: 12, sessionHash: 'xxxx'})
+    .then(...)
   
   // rules as object
   verifier.verifyItem({
@@ -67,9 +82,12 @@ verifier.addRules([
       {name: 'mixed', args: [letuceObject, tomatoObject]},
       {name: 'asyncCheck', args: [] }
     ],
-
+    content: somethingToCheck,
   })
+  .then(...)
 
-
+  // Many rules as object
+  Verifier.verifyItems([item1, item2, ...])
+  .then(results => results.map(({result}) => ...))
 
 ```

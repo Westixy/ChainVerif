@@ -14,7 +14,7 @@ class VerifChain {
   /**
    * Add a rule
    * NB1 : Control param always return boolean but you can return a boolean as string like 'true' of 'false' and it will stop the verification chain
-   * NB2 : error always return a string and recieve the contetn to check and his args (at least an array)
+   * NB2 : Error param return any thing and recieve the content to check and his args (at least an array)
    *
    * @param {*} rule composed of {name: string, control: RegExp|function|Promise, error: string|Promise|function}
    * @see VerifyRule
@@ -90,7 +90,8 @@ class VerifChain {
         result,
         rule: name,
         content,
-        args
+        args,
+        error: undefined
       }
       results.push(resultContent)
       if (result === false) {
@@ -103,7 +104,20 @@ class VerifChain {
   }
 
   /**
-   * just cleaning the result chain to have a better use
+   * Used to verify a bunch of items asynchroneously
+   * NB: if you want to verify one item after one (not recommanded) do it manually with for await of
+   *  
+   * @param {verifyItem[]} items Array of items to verify 
+   * @see this.verifyItem
+   * 
+   * @return {Promise}
+   */
+  verifyItems(items) {
+    return Promise.all(items.map(item => this.verifyItem(item)))
+  }
+
+  /**
+   * Just cleaning the result chain to have a better use
    */
   _cleanResults(results) {
     const resultsErrored = results.filter(a => a.result === false)
@@ -140,7 +154,7 @@ class VerifyRule {
   /**
    * Constructor of a rule
    * NB1 : Control param always return boolean but you can return a boolean as string like 'true' of 'false' and it will stop the verification process when is a string (useful for rule like 'notRequired')
-   * NB2 : Error param always return a string and recieve the contetn to check and his args (at least an array)
+   * NB2 : Error param return any thing and recieve the content to check and his args (at least an array)
    *
    * @param {*} rule composed of {name: string, control: RegExp|function|Promise, error: string|Promise|function}
    */
