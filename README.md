@@ -12,7 +12,24 @@ Some verification pack like for strings or numbers will be available soon, I wil
 const ChainVerif = require('chainverif')
 const verifier = new ChainVerif()
 ```
-3. Add rules
+3. Add a rule package
+```js
+const stringRules = require('chainverif-string')
+verifier.addRules(stringRules)
+```
+4. use it
+```js
+const { result, errors } = await verifier
+  .verify(
+    'required|min_length:4|max_length:25|alphanumeric',
+    usernameInput.value
+  )
+```
+
+## Examples
+
+### Add rules
+
 ```js
 verifier.addRules([
   {
@@ -53,7 +70,8 @@ verifier.addRules([
   }
 ])
 ```
-4. Now verify some values
+
+### Verify
 ```js
   // some simple
   verifier.verify('number|min:3|isBetween:4,6', 5)
@@ -86,7 +104,7 @@ verifier.addRules([
   })
   .then(...)
 
-  // Many rules as object
+  // Many rules as object like before but many :)
   Verifier.verifyItems([item1, item2, ...])
   .then(results => results.map(({result}) => ...))
 
